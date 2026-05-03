@@ -1,0 +1,40 @@
+<?php
+
+namespace App\Livewire\Admin\{{Name}};
+
+use App\Models\{{Name}};
+use Livewire\Component;
+
+class Form extends Component
+{
+    public ?{{Name}} ${{name}} = null;
+    public string $name = '';
+
+    public function mount(?{{Name}} ${{name}} = null): void
+    {
+        if (${{name}} && ${{name}}->exists) {
+            $this->{{name}} = ${{name}};
+            $this->name = ${{name}}->name;
+        }
+    }
+
+    public function save(): void
+    {
+        $this->validate(['name' => 'required|string|max:255']);
+
+        if ($this->{{name}} && $this->{{name}}->exists) {
+            $this->{{name}}->update(['name' => $this->name]);
+            $this->dispatch('toast', message: __('Updated successfully.'), type: 'success');
+        } else {
+            {{Name}}::create(['name' => $this->name]);
+            $this->dispatch('toast', message: __('Created successfully.'), type: 'success');
+        }
+
+        $this->redirect(route('admin.{{name}}.index'), navigate: true);
+    }
+
+    public function render()
+    {
+        return view('admin.{{name}}.form')->layout('layouts.admin');
+    }
+}

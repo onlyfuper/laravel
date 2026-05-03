@@ -1,0 +1,29 @@
+<div class="max-w-2xl w-full mx-auto py-6">
+    <header class="flex items-center gap-4 mb-6">
+        <x-button href="{{ route('admin.{{name}}.index') }}" wire:navigate variant="ghost" size="icon-sm" class="rounded-full">
+            <x-icon name="left" class="size-5" />
+        </x-button>
+        <h1 class="text-lg lg:text-xl font-semibold">
+            {{ ${{name}} && ${{name}}->exists ? __('Edit {{Name}}') : __('Create {{Name}}') }}
+        </h1>
+    </header>
+
+    <div class="border bg-card text-card-foreground rounded-3xl shadow-sm p-6">
+        <form wire:submit="save" class="space-y-4">
+            <x-field>
+                <x-label for="name">{{ __('Name') }}</x-label>
+                <x-input wire:model="name" id="name" type="text" placeholder="{{ __('Enter name') }}" />
+                <x-error field="name" />
+            </x-field>
+
+            <div class="pt-2 flex justify-end gap-3">
+                <x-button href="{{ route('admin.{{name}}.index') }}" wire:navigate variant="ghost" size="sm">
+                    {{ __('Cancel') }}
+                </x-button>
+                <x-button type="submit" size="sm">
+                    {{ __('Save Changes') }}
+                </x-button>
+            </div>
+        </form>
+    </div>
+</div>

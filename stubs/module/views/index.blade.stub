@@ -1,0 +1,83 @@
+<div class="max-w-7xl w-full mx-auto pb-10">
+
+    @if(!$search && ${{names}}->isEmpty())
+        @include('admin.partials.empty-state', [
+            'title'       => __('No {{Names}} yet'),
+            'description' => __('Create your first record to get started. It only takes a few seconds.'),
+            'label'       => __('Create first {{name}}'),
+            'href'        => route('admin.{{slug}}.create'),
+        ])
+
+    @else
+        <x-table :paginate="${{names}}">
+            <x-slot:header>
+                <header class="flex items-center gap-0.5 py-6">
+                    <h1 class="text-lg lg:text-xl font-semibold flex-1">{{ __('{{Names}}') }}</h1>
+                    <div class="flex items-center gap-2">
+                        <x-input type="text" placeholder="{{ __('Search') }} .."
+                                 class="border-transparent !bg-transparent shadow-none rounded-full max-w-xs hidden lg:block"
+                                 iconLeading="search" size="sm"
+                                 wire:model.live.debounce.400ms="search" />
+
+                        @if(count($selected))
+                            <x-button wire:click="bulkDelete" wire:confirm="{{ __('Delete selected items?') }}"
+                                      variant="destructive" size="sm" class="rounded-full">
+                                <x-icon name="delete" class="size-4" />
+                                {{ __('Delete') }} ({{ count($selected) }})
+                            </x-button>
+                        @endif
+
+                        <x-button variant="outline" size="sm" href="{{ route('admin.{{slug}}.create') }}" wire:navigate class="rounded-full pr-4">
+                            <x-icon name="add" class="size-4" />
+                            <span>{{ __('Add new') }}</span>
+                        </x-button>
+                    </div>
+                </header>
+            </x-slot:header>
+
+            <x-table.columns>
+                <x-table.column class="w-10">
+                    <x-checkbox wire:model.live="selectAll" />
+                </x-table.column>
+                <x-table.column sortable :sorted="$sortBy === 'name'" :direction="$sortDir"
+                                wire:click="sort('name')">{{ __('Name') }}</x-table.column>
+                <x-table.column sortable :sorted="$sortBy === 'created_at'" :direction="$sortDir"
+                                wire:click="sort('created_at')">{{ __('Created') }}</x-table.column>
+                <x-table.column></x-table.column>
+            </x-table.columns>
+
+            <x-table.rows>
+                @forelse (${{names}} as $item)
+                    <x-table.row :key="$item->id">
+                        <x-table.cell class="w-10">
+                            <x-checkbox wire:model.live="selected" value="{{ $item->id }}" />
+                        </x-table.cell>
+                        <x-table.cell>
+                            <a href="{{ route('admin.{{slug}}.edit', $item->id) }}" wire:navigate
+                               class="font-medium hover:underline">{{ $item->name }}</a>
+                        </x-table.cell>
+                        <x-table.cell>{{ $item->created_at->format('d M Y') }}</x-table.cell>
+                        <x-table.cell align="end" class="-space-x-1">
+                            <x-button href="{{ route('admin.{{slug}}.edit', $item->id) }}" wire:navigate
+                                      variant="ghost" size="icon-sm">
+                                <x-icon name="edit" class="size-4" />
+                            </x-button>
+                            <x-button wire:click="delete({{ $item->id }})"
+                                      wire:confirm="{{ __('Are you sure?') }}"
+                                      variant="ghost" size="icon-sm" class="text-destructive hover:text-destructive">
+                                <x-icon name="delete" class="size-4" />
+                            </x-button>
+                        </x-table.cell>
+                    </x-table.row>
+                @empty
+                    <x-table.row>
+                        <x-table.cell colspan="4" class="py-12 text-center text-muted-foreground">
+                            {{ __('No results found for ":search".', ['search' => $search]) }}
+                        </x-table.cell>
+                    </x-table.row>
+                @endforelse
+            </x-table.rows>
+        </x-table>
+    @endif
+
+</div>
