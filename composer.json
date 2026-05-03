@@ -1,7 +1,7 @@
 {
     "name": "onlyfuper/laravel",
     "description": "Laravel",
-    "minimum-stability": "1.0.0",
+    "minimum-stability": "stable",
     "type": "library",
     "license": "MIT",
     "require": {
