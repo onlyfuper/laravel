@@ -18,7 +18,7 @@ A professional Laravel starter kit package featuring Livewire 4, TailwindCSS 4, 
 ### 1. Install the Package
 
 ```bash
-composer require knnguler/starter
+composer require onlyfuper/laravel
 ```
 
 ### 2. Run the Installation Command
